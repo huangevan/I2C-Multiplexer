@@ -20,10 +20,10 @@ void tcaselect(uint8_t i) {
   Wire.endTransmission();  
 }
 
-#define CCS811_ADDR 0x5B //Default I2C Address
+//Default I2C Address
 //#define CCS811_ADDR 0x5A //Alternate I2C Address
 
-CCS811 mySensor(CCS811_ADDR);
+CCS811 mySensor(0x5A);
 
 
 
@@ -52,8 +52,29 @@ void setup()
       }
     }
     Serial.println("\ndone");
+    
 }
 
 void loop() 
 {
+   tcaselect(0);
+   if (mySensor.dataAvailable())
+    {
+    //If so, have the sensor read and calculate the results.
+    //Get them later
+    mySensor.readAlgorithmResults();
+
+    Serial.print("CO2[");
+    //Returns calculated CO2 reading
+    Serial.print(mySensor.getCO2());
+    Serial.print("] tVOC[");
+    //Returns calculated TVOC reading
+    Serial.print(mySensor.getTVOC());
+    Serial.print("] millis[");
+    //Simply the time since program start
+    Serial.print(millis());
+    Serial.print("]");
+    Serial.println();
+  }
+  delay(1000);
 }
